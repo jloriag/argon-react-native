@@ -1,99 +1,187 @@
 import React from "react";
 import {
-  ImageBackground,
-  Image,
   StyleSheet,
+  ImageBackground,
+  Dimensions,
   StatusBar,
-  Dimensions
+  KeyboardAvoidingView,
+  Alert
 } from "react-native";
-import { Block, Button, Text, theme } from "galio-framework";
+import { Block, Checkbox, Text, theme } from "galio-framework";
 
-const { height, width } = Dimensions.get("screen");
+import { Button, Icon, Input } from "../components";
+import { Images, argonTheme } from "../constants";
 
-import argonTheme from "../constants/Theme";
-import Images from "../constants/Images";
+const { width, height } = Dimensions.get("screen");
 
-class Onboarding extends React.Component {
+class Register extends React.Component {
+
+  onSubmit = () => {
+      const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+     /* if (reg.test(this.state.email) == false) {
+          Alert.alert('Error', 'Ingrese un correo electrónico valido');
+          return;
+      } else if (this.state.password.trim().length < 8) {
+          Alert.alert('Error', 'Ingrese una contraseña valida (debe contener al menos 8 caracteres)');
+          return;
+      }*/
+      this.props.navigation.navigate("Home");
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: '',
+      password: ''
+    };
+  }
+
   render() {
     const { navigation } = this.props;
-
+    
     return (
-      <Block flex style={styles.container}>
+      <Block flex middle>
         <StatusBar hidden />
-        <Block flex center>
         <ImageBackground
-            source={Images.Onboarding}
-            style={{ height, width, zIndex: 1 }}
-          />
-        </Block>
-        <Block center>
-          <Image source={Images.LogoOnboarding} style={styles.logo} />
-        </Block>
-        <Block flex space="between" style={styles.padded}>
-            <Block flex space="around" style={{ zIndex: 2 }}>
-              <Block style={styles.title}>
-                <Block>
-                  <Text color="white" size={60}>
-                    Design
+          source={Images.RegisterBackground}
+          style={{ width, height, zIndex: 1 }}
+        >
+          <Block flex middle>
+            <Block style={styles.registerContainer}>
+              <Block flex>
+                <Block flex={0.17} middle>
+                  <Text color="#8898AA" size={12}>
+                   [[[LOGO]]]
                   </Text>
                 </Block>
-                <Block>
-                  <Text color="white" size={60}>
-                    System
-                  </Text>
-                </Block>
-                <Block style={styles.subTitle}>
-                  <Text color="white" size={16}>
-                    Fully coded React Native components.
-                  </Text>
+                <Block flex center>
+                  <KeyboardAvoidingView
+                    style={{ flex: 1 }}
+                    behavior="padding"
+                    enabled
+                  >
+                    <Block width={width * 0.8} style={{ marginBottom: 15 }}>
+                      <Input
+                        borderless
+                        placeholder="Email"
+                        onChangeText={(text) => this.setState({ email: text })}
+                        iconContent={
+                          <Icon
+                            size={16}
+                            color={argonTheme.COLORS.ICON}
+                            name="ic_mail_24px"
+                            family="ArgonExtra"
+                            style={styles.inputIcons}
+                          />
+                        }
+                      />
+                    </Block>
+                    <Block width={width * 0.8} style={{ marginBottom: 15 }}>
+                      <Input
+                        password
+                        borderless
+                        placeholder="Contraseña"
+                        onChangeText={(text) => this.setState({ password: text })}
+                        maxLength={16}
+                        iconContent={
+                          <Icon
+                            size={16}
+                            color={argonTheme.COLORS.ICON}
+                            name="padlock-unlocked"
+                            family="ArgonExtra"
+                            style={styles.inputIcons}
+                          />
+                        }
+                      />
+                    </Block>
+                    <Block middle>
+                      <Button onPress={() => this.onSubmit()} color="primary" style={styles.createButton}>
+                        <Text bold size={14} color={argonTheme.COLORS.WHITE}>
+                          INICIAR SESION
+                        </Text>
+                      </Button>
+                    </Block>
+                  </KeyboardAvoidingView>
                 </Block>
               </Block>
-              <Block center>
-                <Button
-                  style={styles.button}
-                  color={argonTheme.COLORS.SECONDARY}
-                  onPress={() => navigation.navigate("App")}
-                  textStyle={{ color: argonTheme.COLORS.BLACK }}
-                >
-                  Get Started
-                </Button>
+              <Block flex={0.25} middle style={styles.socialConnect}>
+                <Text color="#8898AA" size={12}>
+                  Iniciar sesion con google...
+                </Text>
+                <Block row style={{ marginTop: theme.SIZES.BASE }}>
+                  <Button style={styles.socialButtons}>
+                    <Block row>
+                      <Icon
+                        name="logo-google"
+                        family="Ionicon"
+                        size={14}
+                        color={"black"}
+                        style={{ marginTop: 2, marginRight: 5 }}
+                      />
+                      <Text style={styles.socialTextButtons}>GOOGLE</Text>
+                    </Block>
+                  </Button>
+                </Block>
               </Block>
+            </Block>
           </Block>
-        </Block>
+        </ImageBackground>
       </Block>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.COLORS.BLACK
+  registerContainer: {
+    width: width * 0.9,
+    height: height * 0.78,
+    backgroundColor: "#F4F5F7",
+    borderRadius: 4,
+    shadowColor: argonTheme.COLORS.BLACK,
+    shadowOffset: {
+      width: 0,
+      height: 4
+    },
+    shadowRadius: 8,
+    shadowOpacity: 0.1,
+    elevation: 1,
+    overflow: "hidden"
   },
-  padded: {
-    paddingHorizontal: theme.SIZES.BASE * 2,
-    position: "relative",
-    bottom: theme.SIZES.BASE,
-    zIndex: 2,
+  socialConnect: {
+    backgroundColor: argonTheme.COLORS.WHITE,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: "#8898AA"
   },
-  button: {
-    width: width - theme.SIZES.BASE * 4,
-    height: theme.SIZES.BASE * 3,
-    shadowRadius: 0,
-    shadowOpacity: 0
+  socialButtons: {
+    width: 120,
+    height: 40,
+    backgroundColor: "#fff",
+    shadowColor: argonTheme.COLORS.BLACK,
+    shadowOffset: {
+      width: 0,
+      height: 4
+    },
+    shadowRadius: 8,
+    shadowOpacity: 0.1,
+    elevation: 1
   },
-  logo: {
-    width: 200,
-    height: 60,
-    zIndex: 2,
-    position: 'relative',
-    marginTop: '-50%'
+  socialTextButtons: {
+    color: argonTheme.COLORS.PRIMARY,
+    fontWeight: "800",
+    fontSize: 14
   },
-  title: {
-    marginTop:'-5%'
+  inputIcons: {
+    marginRight: 12
   },
-  subTitle: {
-    marginTop: 20
+  passwordCheck: {
+    paddingLeft: 15,
+    paddingTop: 13,
+    paddingBottom: 30
+  },
+  createButton: {
+    width: width * 0.5,
+    marginTop: 25
   }
 });
 
-export default Onboarding;
+export default Register;
